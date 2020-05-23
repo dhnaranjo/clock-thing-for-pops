@@ -42,8 +42,13 @@ faceOutline.setAttribute("stroke", "black");
 faceOutline.setAttribute("stroke-width", 3);
 clock.appendChild(faceOutline);
 
-function drawHand(x, y, color) {
-  var hand = document.createElementNS("http://www.w3.org/2000/svg", "line");
+function drawHand(x, y, color, id) {
+  let hand;
+  hand = document.getElementById(id);
+  if (!hand) {
+    hand = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  }
+  hand.setAttribute("id", id);
   hand.setAttribute("x1", clockPos.x);
   hand.setAttribute("y1", clockPos.y);
   hand.setAttribute("x2", x);
@@ -54,25 +59,33 @@ function drawHand(x, y, color) {
 
 function drawMinuteHand({ minutes, length, color }) {
   const { x, y } = minuteHandPos(minutes, length);
-  drawHand(x, y, color);
+  drawHand(x, y, color, "minute-hand");
 }
 
 function drawHourHand({ hours, length, color }) {
   const { x, y } = hourHandPos(hours, length);
-  drawHand(x, y, color);
+  drawHand(x, y, color, "hour-hand");
 }
 
-const minuteHand = {
-  length: 45,
-  color: "blue",
-  minutes: 30
-};
+const timeInput = document.getElementById("time-input");
+timeInput.addEventListener("keyup", e => {
+  const time = {
+    minutes: 30,
+    hours: e.target.value
+  };
 
-const hourHand = {
-  length: 30,
-  color: "red",
-  hours: 5
-};
+  const minuteHand = {
+    length: 45,
+    color: "blue",
+    minutes: time.minutes
+  };
 
-drawMinuteHand(minuteHand);
-drawHourHand(hourHand);
+  const hourHand = {
+    length: 30,
+    color: "red",
+    hours: time.hours
+  };
+
+  drawMinuteHand(minuteHand);
+  drawHourHand(hourHand);
+});
